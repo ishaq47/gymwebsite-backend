@@ -17,7 +17,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+app.use("/",(req,res)=>{
+    res.send("Welcome to the Gym Website Backend API")
+})
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api/admin', adminRoutes);
