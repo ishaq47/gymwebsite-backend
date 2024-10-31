@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+
 const {
   createMember,
   getAllMembers,
@@ -9,9 +8,10 @@ const {
   updateMember,
   deleteMember,
 } = require('../controllers/memberController');
+const { uploadOnMulter } = require('../middleware/multerMiddleware');
 
 // Create Member
-router.post('/members', upload.single('photo'), createMember);
+router.post('/members', uploadOnMulter.single('photo'), createMember);
 
 // Get All Members
 router.get('/members', getAllMembers);
