@@ -15,7 +15,7 @@ exports.signup = async (req, res) => {
 
   const user = await User.create({ name, email, password });
   const token = generateToken(user._id);
-  res.status(201).json({ user, token });
+  res.status(201).json({message:"i am registered", user, token });
 };
 
 // User login
