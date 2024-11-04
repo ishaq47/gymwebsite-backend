@@ -3,9 +3,11 @@ const router = express.Router();
 const Member = require('../models/Member');
 const Blog = require('../models/Blog');
 const Service = require('../models/Service');
+const { adminMiddleware } = require('../middleware/adminMiddleware');
+
 
 // Dashboard Summary API
-router.get('/dashboard-summary', async (req, res) => {
+router.get('/dashboard-summary', adminMiddleware, async (req, res) => {
   try {
     // Fetch counts for each collection
     const totalMembers = await Member.countDocuments();
