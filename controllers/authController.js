@@ -38,13 +38,13 @@ exports.getProfile = async (req, res) => {
   res.json(user);
 };
 
-// Facebook login
-exports.facebookLogin = async (req, res) => {
-  const { accessToken } = req.body;
+// Google login
+exports.googleLogin = async (req, res) => {
+  const { idToken } = req.body;
 
   try {
-    const response = await axios.get(`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`);
-    const { id, name, email } = response.data;
+    const response = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
+    const { sub, name, email } = response.data;
 
     let user = await User.findOne({ email });
 
@@ -53,14 +53,14 @@ exports.facebookLogin = async (req, res) => {
       user = await User.create({
         name,
         email,
-        password: id, // You can use the Facebook ID as a placeholder for the password
-        facebookId: id,
+        password: sub, // You can use the Google ID as a placeholder for the password
+        googleId: sub,
       });
     }
 
     const token = generateToken(user._id);
     res.json({ user, token });
   } catch (error) {
-    res.status(400).json({ message: 'Invalid Facebook access token' });
+    res.status(400).json({ message: 'Invalid Google ID token' });
   }
 };
