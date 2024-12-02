@@ -1,6 +1,7 @@
 // controllers/authController.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
+const axios = require('axios');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -35,4 +36,31 @@ exports.login = async (req, res) => {
 exports.getProfile = async (req, res) => {
   const user = await User.findById(req.user._id);
   res.json(user);
+};
+
+// Facebook login
+exports.facebookLogin = async (req, res) => {
+  const { accessToken } = req.body;
+
+  try {
+    const response = await axios.get(`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`);
+    const { id, name, email } = response.data;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create a new user if not exists
+      user = await User.create({
+        name,
+        email,
+        password: id, // You can use the Facebook ID as a placeholder for the password
+        facebookId: id,
+      });
+    }
+
+    const token = generateToken(user._id);
+    res.json({ user, token });
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid Facebook access token' });
+  }
 };
