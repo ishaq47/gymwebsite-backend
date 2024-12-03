@@ -44,7 +44,7 @@ exports.googleLogin = async (req, res) => {
 
   try {
     const response = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
-    const { sub, name, email } = response.data;
+    const { sub, name, email, picture } = response.data;
 
     let user = await User.findOne({ email });
 
@@ -55,6 +55,7 @@ exports.googleLogin = async (req, res) => {
         email,
         password: sub, // You can use the Google ID as a placeholder for the password
         googleId: sub,
+        profilePicture: picture,
       });
     }
 

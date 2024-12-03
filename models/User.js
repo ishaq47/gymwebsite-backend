@@ -16,12 +16,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows null values to be unique
+  },
+  profilePicture: {
+    type: String,
+  },
   facebookId: {
     type: String,
     unique: true,
     sparse: true, // Allows null values to be unique
   },
-  is: {
+  role: {
     type: String,
     default: 'user', // 'admin' or 'user'
   },
